@@ -39,7 +39,7 @@
 				overflow: "visible",
 			});
 		}
-		const submitHandler = async (e) => {
+		const submitHandler = (e) => {
 			e.preventDefault(); // Prevent the default form submission
 			showPreloader();
 
@@ -57,25 +57,24 @@
 			};
 
 			try {
-				const response = await fetch(
-					"https://petrocom.techiesgateway.com/api/mailer/contact",
-					{
-						method: "POST",
-						headers: {
-							"Content-Type": "application/json",
-						},
-						body: JSON.stringify(formData),
-					}
-				);
-				hidePreloader();
-
-				console.log(response);
-				if (response.data.status === "1") {
-					alert("Data Sent Successfully");
-					window.location.reload();
-				}else{
-                    alert("Something Went Wrong!")
-                }
+				fetch("https://petrocom.techiesgateway.com/api/mailer/contact", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify(formData),
+				})
+					.then((response) => {
+						return response.json();
+					})
+					.then((res) => {
+						hidePreloader();
+						if (res.status === 1) {
+							alert(res.message);
+							window.location.reload();
+						}
+						hidePreloader();
+					});
 			} catch (error) {
 				hidePreloader();
 
@@ -281,6 +280,7 @@
 												onfocus="this.placeholder = ''"
 												onblur="this.placeholder = 'Enter Message'"
 												placeholder=" Enter Message"
+												required
 											></textarea>
 										</div>
 									</div>
@@ -294,6 +294,7 @@
 												onfocus="this.placeholder = ''"
 												onblur="this.placeholder = 'Enter your name'"
 												placeholder="Enter your name"
+												required
 											/>
 										</div>
 									</div>
@@ -307,6 +308,7 @@
 												onfocus="this.placeholder = ''"
 												onblur="this.placeholder = 'Enter email address'"
 												placeholder="Email"
+												required
 											/>
 										</div>
 									</div>

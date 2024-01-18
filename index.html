@@ -90,7 +90,7 @@
 				const jobdetailsid = document.querySelector(".jobdetailsid");
 				jobdetailsid.style.display = "none";
 			});
-			const sendLoadHandler = async (e) => {
+			const sendLoadHandler =  (e) => {
 			e.preventDefault(); // Prevent the default form submission
 			showPreloader();
 
@@ -99,8 +99,7 @@
 			const phone = e.target.number.value;
 			const frieght_type = e.target.Freight.value;
 			
-            const job_location_data = {"from": e.target.from.value, "to" :  e.target.to.value}
-            console.log(job_location_data)
+            const job_location_data = JSON.stringify({"from": e.target.from.value, "to" :  e.target.to.value})
 			const weight = e.target.weight.value;
 			const height = e.target.height.value;
 			const breadth = e.target.width.value;
@@ -120,24 +119,28 @@
 			};
 
 			try {
-				const response = await fetch(
+				 fetch(
 					"https://petrocom.techiesgateway.com/api/mailer/sendLoad",
 					{
 						method: "POST",
+						body: JSON.stringify(formData),
 						headers: {
 							"Content-Type": "application/json",
 						},
-						body: JSON.stringify(formData),
 					}
-				);
-				console.log(response);
+				).then((response)=>{
+					return response.json()
+
+				}).then((res)=>{
+					hidePreloader();
+					if(res.status === 1){
+					alert(res.message);
+				 	window.location.reload();
+				}
 				hidePreloader();
-				if (response.data.status === "1") {
-					alert("Data Sent Successfully");
-					window.location.reload();
-				}else{
-                    alert("Something Went Wrong!")
-                }
+				})
+				
+				
 			} catch (error) {
 								hidePreloader();
 				console.error("Error:", error.message);
@@ -486,6 +489,7 @@
 													placeholder="Name"
 													name="name"
 													id="name"
+													required
 												/>
 											</div>
 										</div>
@@ -496,6 +500,7 @@
 													placeholder="Email"
 													name="email"
 													id="email"
+													required
 												/>
 											</div>
 										</div>
@@ -515,6 +520,7 @@
 												
 													id="freight_type"
 													name="Freight"
+													required
 												>
 													<option value="">Freight Type</option>
 													<option value="Small Van">Small Van</option>
@@ -531,6 +537,7 @@
 													type="text"
 													placeholder="Source"
 													name="from"
+													required
 													id="source"
 												/>
 											</div>
@@ -542,6 +549,7 @@
 													placeholder="Destination"
 													name="to"
 													id="destination"
+													required
 												/>
 											</div>
 										</div>

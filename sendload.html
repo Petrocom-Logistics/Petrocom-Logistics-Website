@@ -23,15 +23,29 @@
             <link rel="stylesheet" href="assets/css/style.css">
    </head>
    <script>
-		const submitHandler = async (e) => {
+    function showPreloader() {
+					const preloader = document.getElementById("preloader-active");
+					preloader.style.display = "block";
+				}
+				function hidePreloader() {
+					const preloader = document.getElementById("preloader-active");
+					// Fading out the preloader
+					$(preloader).delay(450).fadeOut("slow");
+					// After fading out, making the body visible
+					$("body").delay(450).css({
+						overflow: "visible",
+					});
+				}
+		const submitHandler=  (e) => {
 			e.preventDefault(); // Prevent the default form submission
+			showPreloader();
 
 			const name = e.target.name.value;
 			const email = e.target.email.value;
 			const phone = e.target.number.value;
 			const frieght_type = e.target.Freight.value;
 			
-            const job_location_data = {"from": e.target.from.value, "to" :  e.target.to.value}
+            const job_location_data = JSON.stringify({"from": e.target.from.value, "to" :  e.target.to.value})
             console.log(job_location_data)
 			const weight = e.target.weight.value;
 			const height = e.target.height.value;
@@ -50,26 +64,32 @@
 				height,
 				weight,
 			};
+			console.log(formData)
 
 			try {
-				const response = await fetch(
+				 fetch(
 					"https://petrocom.techiesgateway.com/api/mailer/sendLoad",
 					{
 						method: "POST",
+						body: JSON.stringify(formData),
 						headers: {
 							"Content-Type": "application/json",
 						},
-						body: JSON.stringify(formData),
 					}
-				);
-				console.log(response);
-				if (response.data.status === "1") {
-					alert("Data Sent Successfully");
-					window.location.reload();
-				}else{
-                    alert("Something Went Wrong!")
-                }
+				).then((response)=>{
+					return response.json()
+
+				}).then((res)=>{
+					hidePreloader();
+					if(res.status === 1){
+					alert(res.message);
+				 	window.location.reload();
+				}
+				hidePreloader();
+				})
+				
 			} catch (error) {
+								hidePreloader();
 				console.error("Error:", error.message);
 			}
 		};
@@ -183,12 +203,12 @@
                                 <div class="row ">
                                     <div class="col-lg-6 col-md-6">
                                         <div class="input-form">
-                                            <input type="text" placeholder="Name" name="name">
+                                            <input type="text" placeholder="Name" name="name" required>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-6">
                                         <div class="input-form">
-                                            <input type="text" placeholder="Email" name="email">
+                                            <input type="text" placeholder="Email" name="email" required>
                                         </div>
                                     </div>
                                     <div class="col-lg-12">
@@ -198,7 +218,7 @@
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="select-items">
-                                            <select name="Freight" id="select1">
+                                            <select name="Freight" id="select1" required>
                                                 <option value="">Freight Type</option>
                                                 <option value="">Small Van</option>
                                                 <option value="">SWB</option>
@@ -210,12 +230,12 @@
                                     </div>
                                     <div class="col-lg-6 col-md-6">
                                         <div class="input-form">
-                                            <input type="text" placeholder="Source" name="from">
+                                            <input type="text" placeholder="Source" name="from" required>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-6 col-sm-6">
                                         <div class="input-form">
-                                            <input type="text" placeholder="Destination" name="to">
+                                            <input type="text" placeholder="Destination" name="to" required>
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-md-6 col-sm-6">
