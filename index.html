@@ -32,7 +32,7 @@
 				const form = document.querySelector("form");
 				form.addEventListener("submit", submitHandler);
 			});
-			const apiUrl = "https://petrocom.techiesgateway.com/api/job/getJobById/";
+			const apiUrl = "https://dashboard-backend.petrocomlogistics.co.uk/api/job/getJobById/";
 			async function submitHandler(e) {
 				showPreloader();
 				try {
@@ -120,7 +120,7 @@
 
 			try {
 				 fetch(
-					"https://petrocom.techiesgateway.com/api/mailer/sendLoad",
+					"https://dashboard-backend.petrocomlogistics.co.uk/api/mailer/sendLoad",
 					{
 						method: "POST",
 						body: JSON.stringify(formData),
