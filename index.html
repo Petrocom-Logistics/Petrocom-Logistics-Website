@@ -41,12 +41,24 @@
 					const jobid = e.target.trackingid.value;
 					const response = await fetch(apiUrl + jobid);
 					hidePreloader();
-
+					
 					const jobdetailsid = document.querySelector(".jobdetailsid");
 					jobdetailsid.style.display = "block";
 					// Storing data in form of JSON
 					var data = await response.json();
 					var jobData = data.data;
+					if(jobData === undefined){
+						const noDataFound = document.getElementsByClassName("notfound");
+					if (noDataFound.length > 0) {
+						const nodata = noDataFound[0];
+						nodata.innerHTML = "No Data Found!";
+					}
+						document.querySelector(".jobdetailsid").style.display = "none";
+					}else{
+							
+						document.querySelector(".jobdetailsid").style.display = "block";
+					}
+					
 
 					const jobstatusElements =
 						document.getElementsByClassName("job-status");
@@ -280,6 +292,7 @@
 									<div class="hero-pera">
 										<p>For order status inquiry</p>
 									</div>
+									
 									<div class="jobdetailsid">
 										<div>
 											<label>Job Status : </label>
@@ -294,6 +307,7 @@
 											<label class="time-left"></label>
 										</div> -->
 									</div>
+									<div><label class="notfound" style="color:white"></label></div>
 								</div>
 							</div>
 						</div>
